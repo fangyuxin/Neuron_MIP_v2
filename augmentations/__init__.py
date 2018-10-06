@@ -20,7 +20,12 @@ def get_composed_augmentations(aug_dict):
 
     else:
         for aug_key, aug_param in aug_dict.items():
-            augs.append((key2aug[aug_key](aug_param)))
+
+            if aug_param is not None:
+                augs.append((key2aug[aug_key](aug_param)))
+
+            else:
+                augs.append((key2aug[aug_key]()))
 
     augs.append(T.ToTensor())
 

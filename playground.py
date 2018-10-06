@@ -2,17 +2,20 @@ from data import *
 import matplotlib.pyplot as plt
 import torch
 
+
+
 aug_dict = {
     'train': {
         'Resize': 256,
         'RandomHorizontalFlip': random.randint(0,1),
-        'Grayscale': 1
+        'Grayscale': None
     },
 
     'other': {
         'Resize': 256
     }
 }
+
 for phase in ['train', 'val', 'test']:
 
     neuron_dataset = NeuronDataset(phase=phase, aug_dict=aug_dict)
@@ -23,13 +26,14 @@ for phase in ['train', 'val', 'test']:
 
         plt.subplot(1, 2, 1)
         # print(image.numpy().shape)
-        plt.imshow(image.numpy()[0])
+        plt.imshow(image.numpy()[0], cmap='gray')
 
         plt.subplot(1, 2, 2)
-        plt.imshow(label.numpy()[0])
+        plt.imshow(label.numpy()[0], cmap='gray')
 
         plt.show()
 
         if i == 2:
             break
+
 
