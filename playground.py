@@ -5,17 +5,18 @@ import torch
 aug_dict = {
     'train': {
         'Resize': 256,
-        'RandomHorizontalFlip': None
+        'RandomHorizontalFlip': random.randint(0,1),
+        'Grayscale': 1
     },
 
     'other': {
-        'Resize': 256,
-
+        'Resize': 256
     }
 }
 for phase in ['train', 'val', 'test']:
 
-    neuron_dataset = NeuronDataset(phase=phase)
+    neuron_dataset = NeuronDataset(phase=phase, aug_dict=aug_dict)
+
     for i, (image, label) in enumerate(neuron_dataset):
 
         plt.figure()
