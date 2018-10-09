@@ -39,11 +39,28 @@ class DefaultConfig(object):
     lr = 0.1  # initial learning rate
     lr_decay = 0.95  # when val_loss increase, lr = lr*lr_decay
     weight_decay = 1e-4  # 损失函数
+    momentum = 0.9
 
     loss_name = None
     loss_param = None
 
-    optim_name = None
+
+    optim_name = 'SGD'
+    optim_param = {'SGD':
+                      {'lr': lr,
+                       'momentum': momentum,
+                       'weight_decay': weight_decay
+                       }
+                   'Adam':
+                      {'lr': lr,
+                       'weight_decay': weight_decay
+                       }
+                   'RMSprop':
+                      {'lr': lr,
+                       'momentum': momentum,
+                       'weight_decay': weight_decay
+                       }
+                   }
 
 
 
