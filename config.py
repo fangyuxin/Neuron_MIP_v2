@@ -1,5 +1,7 @@
 # coding:utf8
 import warnings
+import torch
+from utils import *
 
 
 class DefaultConfig(object):
@@ -9,8 +11,24 @@ class DefaultConfig(object):
     dataset_root = '.dataset/'
     load_model_path = 'checkpoints/model.pth'  # 加载预训练的模型的路径，为None代表不加载
 
+    # 数据增强
+    train_aug_dict = {
+        'Resize': 256,
+        'RandomHorizontalFlip': None
+    }
+    other_aug_dict = {
+        'Resize': 256
+    }
+    aug_dict = {
+        'train': train_aug_dict,
+        'other': other_aug_dict
+    }
+
+    in_channel = 1  # 输入通道数
+    out_channel = 2  # 输出通道数
+
     batch_size = 128  # batch size
-    use_gpu = True  # user GPU or not
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # user GPU or not
     num_workers = 4  # how many workers for loading data
     print_freq = 20  # print info every N batch
 
@@ -22,6 +40,14 @@ class DefaultConfig(object):
     lr_decay = 0.95  # when val_loss increase, lr = lr*lr_decay
     weight_decay = 1e-4  # 损失函数
 
+    loss_name = None
+    loss_param = None
+
+    optim_name = None
+
+
+
+
     def parse(self, kwargs):
 
         for k, v in kwargs.items():
@@ -30,6 +56,11 @@ class DefaultConfig(object):
                 warnings.warn("Warning: cfg has not attribut {}".format(k))
 
             setattr(self, k, v)
+
+
+cfg = DefaultConfig()
+
+
 
 
 # def parse(self, kwargs):
