@@ -42,7 +42,8 @@ def train(**kwarg):
     criterion = get_criterion(cfg)
 
     # 初始化optimizer.
-    optimizer = get_optimizer(cfg)(model.parameters(), )
+    optimizer = get_optimizer(cfg)(model.parameters(), \
+                                   **cfg.optim_param[cfg.optim_name])
 
 
 
