@@ -12,14 +12,13 @@ key2optim = {
 
 def get_optimizer(cfg):
 
-    assert cfg.optim_name not in key2optim, \
+    assert cfg.optim_name in key2optim, \
         '{} is not available.'.format(cfg.optim_name)
 
-    assert cfg.optim_name == None, \
-        'Optimizer unsure'
+    assert cfg.optim_name != None, \
+        'Optimizer unsure.'
 
-    elif:
-        return key2optim[cfg.optim_name]
+    return key2optim[cfg.optim_name]
 
 
 

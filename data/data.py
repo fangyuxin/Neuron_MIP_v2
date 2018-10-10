@@ -51,7 +51,8 @@ class NeuronDataset(Dataset):
         image_path = self.images_list[index]
 
         label_path = os.path.join(self.root, self.phase, 'label', \
-                    '{}.{}'.format(image_path.split('.')[-2].split('/')[-1], \image_path.split('.')[-1]))
+                    '{}.{}'.format(image_path.split('.')[-2].split('/')[-1], \
+                                   image_path.split('.')[-1]))
 
         image = Image.open(image_path)
         label = Image.open(label_path)
@@ -64,7 +65,7 @@ class NeuronDataset(Dataset):
         random.seed(seed)
         label = self.transforms(label)
 
-        return image, label
+        return image.view(-1, *image.size()), label.long()
 
     def __len__(self):
         return len(self.images_list)

@@ -57,6 +57,7 @@ class Unet(Model):
 
         self.output = nn.Conv2d(filters[0], out_class, kernel_size=1)
 
+
     def forward(self, inputs):
         x1 = self.unet_down1(inputs)
         x1_maxpool = self.maxpool(x1)

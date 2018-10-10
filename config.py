@@ -6,9 +6,9 @@ from utils import *
 
 class DefaultConfig(object):
     env = 'default'  # visdom 环境
-    model = 'unet'  # 使用的模型，名字必须与models/__init__.py中的名字一致
+    model = 'Unet'  # 使用的模型，名字必须与models/__init__.py中的名字一致
 
-    dataset_root = '.dataset/'
+    dataset_root = './dataset'
     load_model_path = 'checkpoints/model.pth'  # 加载预训练的模型的路径，为None代表不加载
 
     # 数据增强
@@ -24,18 +24,17 @@ class DefaultConfig(object):
         'other': other_aug_dict
     }
 
-    in_channel = 1  # 输入通道数
-    out_channel = 2  # 输出通道数
+    num_class = {'in': 1, 'out': 2}
 
-    batch_size = 128  # batch size
+    batch_size = 4  # batch size
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # user GPU or not
     num_workers = 4  # how many workers for loading data
-    print_freq = 20  # print info every N batch
+    print_freq = 5  # print info every N batch
 
     debug_file = '/tmp/debug'  # if os.path.exists(debug_file): enter ipdb
     result_file = 'result.csv'
 
-    max_epoch = 10
+    num_epochs = 20
     lr = 0.1  # initial learning rate
     lr_decay = 0.95  # when val_loss increase, lr = lr*lr_decay
     weight_decay = 1e-4  # 损失函数
@@ -50,19 +49,30 @@ class DefaultConfig(object):
                       {'lr': lr,
                        'momentum': momentum,
                        'weight_decay': weight_decay
-                       }
+                       },
                    'Adam':
                       {'lr': lr,
                        'weight_decay': weight_decay
-                       }
+                       },
                    'RMSprop':
                       {'lr': lr,
                        'momentum': momentum,
                        'weight_decay': weight_decay
-                       }
+                       },
                    }
 
 
+    shdlr_name = 'StepLR'
+    shdlr_param = {
+        'StepLR': {
+            'step_size': 4,
+            'gamma': 0.1
+        },
+    }
+
+    metrics = 'IoU'
+
+    softmax = nn.Softmax2d()
 
 
     def parse(self, kwargs):
