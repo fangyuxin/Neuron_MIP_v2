@@ -28,8 +28,8 @@ class ConfusionMeter():
 
     def process(self, predicted, target):
 
-        predicted = predicted.detach().cpu().numpy()
-        target = target.detach().cpu().numpy()
+        predicted = predicted.cpu().numpy()
+        target = target.cpu().numpy()
         batch_size = predicted.shape[0]
 
         if np.ndim(predicted) != 1 and np.ndim(predicted) != 3:
@@ -63,24 +63,27 @@ class ConfusionMeter():
         IoU = np.diag(cf) / (np.sum(cf, axis=0) + np.sum(cf, axis=1) - np.diag(cf))
         mean_IoU = np.nanmean(IoU)
 
+        dice = 2 * np.diag(cf) / (np.sum(cf, axis=0) + np.sum(cf, axis=1))
+        mean_dice = np.nanmean(dice)
+
         acc = np.diag(cf).sum() / cf.sum()
 
         scores = {
             'IoU': mean_IoU,
-            'Acc': acc
+            'Dice': mean_dice,
+            'Acc': acc,
 
-        #     ...
+            # ...
 
         }
 
         if metrics == None:
-            for m in scores:
-                print(m + ': {}   '.format(scores[m]))
+            return scores
 
         else:
-            print(str(metrics) + ': {}   '.format(scores[str(metrics)]))
+            return scores[metrics]
 
-        return scores
+
 
 
 

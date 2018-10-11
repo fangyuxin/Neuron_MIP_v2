@@ -65,7 +65,7 @@ class NeuronDataset(Dataset):
         random.seed(seed)
         label = self.transforms(label)
 
-        return image.view(-1, *image.size()), label.long()
+        return image, label[0].long()
 
     def __len__(self):
         return len(self.images_list)

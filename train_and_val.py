@@ -83,7 +83,7 @@ def train_and_val(**kwarg):
             loss_meter.reset()
             score_meter.reset()
 
-            for i, (input, target) in enumerate(dataset[phase], start=1):
+            for i, (input, target) in enumerate(dataloader[phase], start=1):
 
                 input = input.to(device)
                 target = target.to(device)
@@ -94,25 +94,44 @@ def train_and_val(**kwarg):
 
                     output = model(input)
                     loss = criterion(output, target)
+                    # print(output.size())
+
                     pred = cfg.softmax(output)
+                    pred = torch.max(pred, dim=1)[1]
+
+                    vis_pred = pred[0].float()
+                    vis_target = target[0].float()
+
+                    # pred_count1 = (pred == 1).long()
+                    # print(pred.sum())
+
+
+                    # print(pred.size())
 
                     if phase == 'train':
                         loss.backward()
                         optimizer.step()
 
-                loss_meter.update(loss.item())
-                score_meter.update(output, target)
+                with torch.no_grad():
 
-                if i % cfg.print_freq == 0:
-                    vis.plot('loss', loss_meter.get_value()[0])
-                    print(score_meter.get_scores('IoU'))
-                    vis.plot('IoU', score_meter.get_scores('IoU'))
-                    vis.img('pred', pred)
+                    loss_meter.update(loss.item())
+                    score_meter.update(output, target)
+
+                    if i % cfg.print_freq == 0:
+
+                        vis.plot('loss', loss_meter.get_value()[0])
+                        vis.plot('IoU', score_meter.get_scores('IoU'))
+                        vis.plot('Dice', score_meter.get_scores('Dice'))
+
+                        vis.img('pred', vis_pred)
+                        vis.img('label', vis_target)
+
 
             epoch_loss = loss_meter.get_value()[0]
             epoch_IoU = score_meter.get_scores('IoU')
-            print('{} Loss: {:.4f} Acc: {:.4f}'.\
-                format(phase, epoch_loss, epoch_acc))
+            epoch_Dice = score_meter.get_scores('Dice')
+            print('{} Loss: {:.4f}   IoU: {:.4f}   Dice: {:.4f}'.\
+                format(phase, epoch_loss, epoch_IoU, epoch_Dice))
 
             if phase == 'val' and epoch_IoU > best_score:
                 best_model_wts = copy.deepcopy(model.state_dict())
@@ -122,6 +141,8 @@ def train_and_val(**kwarg):
     model.load_state_dict(best_model_wts)
     model.save()
     return model
+
+
 
 train_and_val()
 
