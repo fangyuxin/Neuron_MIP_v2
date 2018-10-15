@@ -30,6 +30,7 @@ class DefaultConfig(object):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # user GPU or not
     num_workers = 4  # how many workers for loading data
     print_freq = 1  # print info every N batch
+    shuffle = True
 
     debug_file = '/tmp/debug'  # if os.path.exists(debug_file): enter ipdb
     result_file = 'result.csv'
@@ -37,11 +38,11 @@ class DefaultConfig(object):
     num_epochs = 30
     lr = 0.1  # initial learning rate
     lr_decay = 0.95  # when val_loss increase, lr = lr*lr_decay
-    weight_decay = 1e-6  # 损失函数
+    weight_decay = 0  # 损失函数
     momentum = 0.9
 
     loss_name = None
-    loss_param = {'weight': [1.0, 5.0]}
+    loss_param = {'weight': [1.0, 100.0]}
 
 
     optim_name = 'SGD'

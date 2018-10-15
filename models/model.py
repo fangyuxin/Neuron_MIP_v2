@@ -12,9 +12,14 @@ class Model(nn.Module):
         self.load_state_dict(torch.load(PATH))
 
     def save(self, name=None):
+
+        prefix = 'checkpoints/' + self.model_name + '_'
+
         if name == None:
-            prefix = 'checkpoints/' + self.model_name + '_'
             name = time.strftime(prefix + '%m%d_%H:%M:%S.pth')
+
+        else:
+            name = prefix + name
 
         torch.save(self.state_dict(), name)
         return name
