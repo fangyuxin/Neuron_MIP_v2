@@ -5,20 +5,24 @@ from tqdm import tqdm
 
 
 
-def train_and_val():
-
-    # 训练.
+def _train_and_val(dataloader, get_model=False):
 
     best_model_wts = copy.deepcopy(model.module.state_dict())
-    best_score = {'best_IoU': 0, 'best_Dice': 0}
+    best_score = {metric: 0 for metric in cfg.metrics}
+    model.module.reset()
+    scheduler = set_scheduler()
 
     for epoch in range(cfg.num_epochs):
 
         print('Epoch {}/{}'.format(epoch + 1, cfg.num_epochs))
         print('-' * 50)
 
-        # 每一个epoch有2个phase: train, val.
-        for phase in ['train', 'val']:
+        if get_model:
+            phase_list = ['train']
+        else:
+            phase_list = ['train', 'val']
+
+        for phase in phase_list:
 
             if phase == 'train':
                 scheduler.step()
@@ -46,8 +50,8 @@ def train_and_val():
                     pred = cfg.softmax(output)
                     pred = torch.max(pred, dim=1)[1]
 
-                    vis_pred = pred[0].float()
-                    vis_target = target[0].float()
+                    vis_pred = pred.float()
+                    vis_target = target.float()
 
                     if phase == 'train':
                         loss.backward()
@@ -64,8 +68,10 @@ def train_and_val():
                         vis.plot('IoU', score_meter.get_scores('IoU'))
                         vis.plot('Dice', score_meter.get_scores('Dice'))
 
-                        vis.img('pred', vis_pred)
-                        vis.img('label', vis_target)
+                        vis.img('Ori', input[0])
+                        vis.img('pred', vis_pred[0])
+                        vis.img('label', vis_target[0])
+
 
 
             epoch_loss = loss_meter.get_value()[0]
@@ -74,29 +80,80 @@ def train_and_val():
             print('{} Loss: {:.4f}   IoU: {:.4f}   Dice: {:.4f}'.\
                 format(phase, epoch_loss, epoch_IoU, epoch_Dice))
 
-            if phase == 'val' \
-                    and epoch_IoU > best_score['best_IoU'] \
-                    and epoch_Dice > best_score['best_Dice']:
+            if (phase == 'val' or get_model == True) \
+                    and epoch_IoU > best_score['IoU'] \
+                    and epoch_Dice > best_score['Dice']:
                 best_model_wts = copy.deepcopy(model.module.state_dict())
-                best_score['best_IoU'] = epoch_IoU
-                best_score['best_Dice'] = epoch_Dice
+                best_score['IoU'] = epoch_IoU
+                best_score['Dice'] = epoch_Dice
 
+    return model, best_score, best_model_wts
+
+
+
+def _train_and_val_CV():
+
+
+    for k in range(cfg.k_fold_split):
+
+        print('Fold: {}/{}'.format(k + 1, cfg.k_fold_split))
+
+        model, best_score, best_model_wts = _train_and_val(dataloader_list[k])
+
+        for metric in best_score:
+            if k == 0:
+                best_score_dict = {metric: AverageValueMeter() for metric in best_score}
+
+            best_score_dict[metric].update(best_score[metric])
+
+    for metric in best_score_dict:
+        best_score_dict[metric] = best_score_dict[metric].get_value()[0]
+        print('{}: {}  '.format(metric, best_score_dict[metric]))
+
+    return model, best_score_dict, best_model_wts
+
+
+def get_model(best_score):
+
+    dataset = {
+        phase: NeuronDataset(cfg.dataset_root, phase=phase,
+                             aug_dict=cfg.aug_dict, split_ratio=0)
+        for phase in ['train']
+    }
+
+    dataloader = {
+        phase: DataLoader(dataset[phase], batch_size=cfg.batch_size,
+                          shuffle=cfg.shuffle, num_workers=cfg.num_workers)
+        for phase in ['train']
+    }
+
+    model, _, best_model_wts = _train_and_val(dataloader, get_model=True)
 
     best_model_info = ''
     for metric in best_score:
-        best_model_info += '{}: {:.4f}  '.format(metric, best_score[metric])
+        best_model_info += '{}_{:.4f}_'.format(metric, best_score[metric])
 
     model.module.load_state_dict(best_model_wts)
     model.module.save(best_model_info)
-    return model
+
+
+
+def train_and_val():
+
+    if cfg.CV:
+        _, best_score, _ = _train_and_val_CV()
+
+    else:
+        _, best_score, _ = _train_and_val(dataloader)
+
+    get_model(best_score)
+
+
+
+
 
 
 train_and_val()
-
-
-
-
-
 
 
 

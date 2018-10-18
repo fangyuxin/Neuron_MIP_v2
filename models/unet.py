@@ -57,6 +57,13 @@ class Unet(Model):
 
         self.output = nn.Conv2d(filters[0], out_class, kernel_size=1)
 
+    def reset(self):
+        for m in self.modules():
+            if isinstance(m, (nn.Conv2d,
+                              nn.ConvTranspose2d,
+                              nn.BatchNorm2d)):
+                m.reset_parameters()
+
 
     def forward(self, inputs):
         x1 = self.unet_down1(inputs)

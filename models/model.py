@@ -13,7 +13,7 @@ class Model(nn.Module):
 
     def save(self, name=None):
 
-        prefix = 'checkpoints/' + self.model_name + '_'
+        prefix = 'checkpoints/' + self.model_name.split('.')[-1].split('\'')[0] + '_'
 
         if name == None:
             name = time.strftime(prefix + '%m%d_%H:%M:%S.pth')

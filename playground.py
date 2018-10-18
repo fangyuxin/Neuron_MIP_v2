@@ -105,15 +105,27 @@
 # #
 # #     previous_loss = loss_meter.value()[0]
 
-import torch
-from models import *
-model = Unet()
-model.load("./checkpoints/<class 'models.unet.Unet'>_best_IoU: 0.8070  best_Dice: 0.8815  ")
-for param in model.state_dict():
-    print(param)
-# t = torch.ones(3, 2)
-# print(t.view(-1, *t.size()).size())
+# import torch
+# from models import *
+# model = Unet()
+# model.load("./checkpoints/<class 'models.unet.Unet'>_best_IoU: 0.8070  best_Dice: 0.8815  ")
+# for param in model.state_dict():
+#     print(param)
+# # t = torch.ones(3, 2)
+# # print(t.view(-1, *t.size()).size())
+
+#
+# a = 1
+#
+# def f(b):
+#     b = 2
+#
+# print(a)
+# f(a)
+# print(a)
+#
+# #
+# from torchvision.models import densenet
 
 
-
-
+print('\'')
