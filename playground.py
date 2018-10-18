@@ -127,5 +127,38 @@
 # #
 # from torchvision.models import densenet
 
+#
+# print('\'')
+#
+# import csv
+#
+# def dict2csv_r(dict, file):
+#     with open(file, 'a+') as f:
+#         w=csv.writer(f)
+#         # write each key/value pair on a separate row
+#         # w.writerow(dict.keys())
+#         w.writerow(list)
+#
+#
+# def dict2csv_c(dict, file):
+#     with open(file, 'w+') as f:
+#         w=csv.writer(f)
+#         # write each key/value pair on a separate row
+#         w.writerows(dict.items())
+#
+#
+# dict = {'image_1': {'IoU': 90, 'Dice': 80},
+#         'image_2': {'IoU': 100, 'Dice': 60}}
+#
+# dict_ = {'a': 1, 'b': 2}
+#
+# list = ['str', '1', 2]
+#
+# dict2csv_r(list, './rec.csv')
 
-print('\'')
+dict_ = {'a': 1, 'b': 2}
+
+list = [x for x in dict_.values()]
+
+list.insert(0, 1000)
+print(list)

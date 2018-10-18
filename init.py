@@ -1,4 +1,4 @@
-
+import csv
 from config import *
 import models
 from data import *
@@ -89,6 +89,13 @@ def set_scheduler():
 loss_meter = AverageValueMeter()
 score_meter = ConfusionMeter(cfg.num_class['out'])
 # model_stat_meter = AverageValueMeter()
+
+def list2csv(list, file, mode='a+'):
+    with open(file, mode) as f:
+        w=csv.writer(f)
+        # write each key/value pair on a separate row
+        # w.writerow(dict.keys())
+        w.writerow(list)
 
 
 

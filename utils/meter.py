@@ -18,12 +18,19 @@ class ConfusionMeter():
     def __init__(self, num_class):
 
         self.num_class = num_class
+
         self.cf = np.ndarray((num_class, num_class), dtype=np.int32).reshape(num_class, num_class)
         self.reset()
+
+        self.one_cf = np.ndarray((num_class, num_class), dtype=np.int32).reshape(num_class, num_class)
+        self.one_reset()
 
 
     def reset(self):
         self.cf.fill(0)
+
+    def one_reset(self):
+        self.one_cf.fill(0)
 
 
     def process(self, predicted, target):
@@ -52,13 +59,18 @@ class ConfusionMeter():
         for p, t in zip(predicted, target):
             position = t * self.num_class + p
 
-            self.cf += np.bincount(position, minlength=self.num_class ** 2). \
+            self.one_cf = np.bincount(position, minlength=self.num_class ** 2). \
                 reshape(self.num_class, self.num_class)
 
+            self.cf += self.one_cf
 
-    def get_scores(self, metrics=None):
 
-        cf = self.cf
+    def get_scores(self, metrics=None, is_single=False):
+
+        if is_single:
+            cf = self.one_cf
+        else:
+            cf = self.cf
 
         IoU = np.diag(cf) / (np.sum(cf, axis=0) + np.sum(cf, axis=1) - np.diag(cf))
         mean_IoU = np.nanmean(IoU)
@@ -68,10 +80,14 @@ class ConfusionMeter():
 
         acc = np.diag(cf).sum() / cf.sum()
 
+        recall = np.diag(cf) / np.sum(cf, axis=1)
+        mean_recall = np.nanmean(recall)
+
         scores = {
             'IoU': mean_IoU,
             'Dice': mean_dice,
             'Acc': acc,
+            'Recall': mean_recall
 
             # ...
 
@@ -82,7 +98,6 @@ class ConfusionMeter():
 
         else:
             return scores[metrics]
-
 
 
 

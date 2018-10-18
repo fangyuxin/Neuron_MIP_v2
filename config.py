@@ -17,11 +17,11 @@ class DefaultConfig(object):
 
     # 数据增强
     train_aug_dict = {
-        'Resize': 320,
+        'Resize': 256,
         'RandomHorizontalFlip': None
     }
     other_aug_dict = {
-        'Resize': 320
+        'Resize': 256
     }
     aug_dict = {
         'train': train_aug_dict,
@@ -30,9 +30,9 @@ class DefaultConfig(object):
 
     num_class = {'in': 1, 'out': 2}
 
-    batch_size = 1  # batch size
+    batch_size = 32  # batch size
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # user GPU or not
-    num_workers = 2  # how many workers for loading data
+    num_workers = 4  # how many workers for loading data
     print_freq = 1  # print info every N batch
     shuffle = True
 

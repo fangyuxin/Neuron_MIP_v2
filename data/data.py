@@ -24,7 +24,7 @@ class NeuronDataset(Dataset):
 
         images_root = os.path.join(root, self.phase, 'image')
         images_list = [os.path.join(images_root, image_name) \
-                        for image_name in os.listdir(images_root)[:4097]]
+                        for image_name in os.listdir(images_root)[:8193]]
 
         images_list = sorted(images_list, key=lambda x: \
                              int(x.split('.')[-2].split('/')[-1]))

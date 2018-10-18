@@ -31,6 +31,8 @@ def _test(dataloader):
     loss_meter.reset()
     score_meter.reset()
 
+    list2csv(['result_name', 'IoU', 'Dice', 'Acc', 'Recall'], './result_stat.csv', mode='w+')
+
     for i, (input, target) in tqdm(enumerate(dataloader[phase], start=0), total=len(dataloader[phase])):
     # for i, (input, target) in enumerate(dataloader[phase], start=1):
 
@@ -55,9 +57,16 @@ def _test(dataloader):
             vis_target = target.float()
 
             for j in range(cfg.batch_size):
+                result_stat = [score for score in score_meter.get_scores(is_single=True).values()]
 
                 result = torch.cat(((input[j][0] * 255).byte(), (vis_target[j] * 255).byte(), (vis_pred[j] * 255).byte()), dim=1)
-                imageio.imwrite((cfg.dataset_root + '/result/result_{}.png').format(i * cfg.batch_size + j), result.cpu().numpy())
+                result_name = ('result_{}.png').format(i * cfg.batch_size + j)
+                result_stat.insert(0, result_name)
+
+                list2csv(result_stat, './result_stat.csv')
+
+                imageio.imwrite(cfg.dataset_root + '/result/' + result_name, result.cpu().numpy())
+
 
                 # imageio.imwrite('./all_dataset/pred/ori_{}.png'.format(i + j), input[i][0].cpu().numpy())
                 # imageio.imwrite('./all_dataset/pred/pred_{}.png'.format(i + j), vis_pred[i].cpu().numpy())
