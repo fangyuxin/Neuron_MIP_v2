@@ -1,4 +1,4 @@
-
+import time
 import copy
 from init import *
 from tqdm import tqdm
@@ -13,6 +13,8 @@ def _train_and_val(dataloader, get_model=False):
     scheduler = set_scheduler()
 
     for epoch in range(cfg.num_epochs):
+
+        since = time.time()
 
         print('Epoch {}/{}'.format(epoch + 1, cfg.num_epochs))
         print('-' * 50)
@@ -80,6 +82,10 @@ def _train_and_val(dataloader, get_model=False):
             print('{} Loss: {:.4f}   IoU: {:.4f}   Dice: {:.4f}'.\
                 format(phase, epoch_loss, epoch_IoU, epoch_Dice))
 
+            time_elapsed = time.time() - since
+            print('Epoch_{} complete in {:.0f}m {:.0f}s'. \
+                  format(epoch, time_elapsed // 60, time_elapsed % 60))
+
             if (phase == 'val' or get_model == True) \
                     and epoch_IoU > best_score['IoU'] \
                     and epoch_Dice > best_score['Dice']:
@@ -113,7 +119,7 @@ def _train_and_val_CV():
     return model, best_score_dict, best_model_wts
 
 
-def get_model(best_score):
+def get_model(best_score=None):
 
     dataset = {
         phase: NeuronDataset(cfg.dataset_root, phase=phase,
@@ -129,9 +135,13 @@ def get_model(best_score):
 
     model, _, best_model_wts = _train_and_val(dataloader, get_model=True)
 
-    best_model_info = ''
-    for metric in best_score:
-        best_model_info += '{}_{:.4f}_'.format(metric, best_score[metric])
+    if best_score:
+        best_model_info = ''
+        for metric in best_score:
+            best_model_info += '{}_{:.4f}_'.format(metric, best_score[metric])
+
+    else:
+         best_model_info = best_score
 
     model.module.load_state_dict(best_model_wts)
     model.module.save(best_model_info)
@@ -151,9 +161,9 @@ def train_and_val():
 
 
 
+get_model(None)
 
-
-train_and_val()
+# train_and_val()
 
 
 

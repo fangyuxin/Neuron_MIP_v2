@@ -8,8 +8,10 @@ class DefaultConfig(object):
     env = 'Unet'  # visdom 环境
     model = 'Unet'  # 使用的模型，名字必须与models/__init__.py中的名字一致
 
-    dataset_root = './all_dataset'
-    load_model_path = 'checkpoints/model.pth'  # 加载预训练的模型的路径，为None代表不加载
+    dataset_root = './Neuron_MIP_negative'
+    result_path = dataset_root + '/result/'
+    csv_path = result_path + '/result_stat.csv'
+
     CV = True
     k_fold_split = 8
     split_ratio = 1 / k_fold_split
@@ -17,11 +19,11 @@ class DefaultConfig(object):
 
     # 数据增强
     train_aug_dict = {
-        'Resize': 256,
+        'Resize': 320,
         'RandomHorizontalFlip': None
     }
     other_aug_dict = {
-        'Resize': 256
+        'Resize': 320
     }
     aug_dict = {
         'train': train_aug_dict,
@@ -30,7 +32,9 @@ class DefaultConfig(object):
 
     num_class = {'in': 1, 'out': 2}
 
-    batch_size = 32  # batch size
+    data_size = 9000
+    batch_size = 30  # batch size
+    test_batch_size = 1
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # user GPU or not
     num_workers = 4  # how many workers for loading data
     print_freq = 1  # print info every N batch
@@ -39,7 +43,7 @@ class DefaultConfig(object):
     debug_file = '/tmp/debug'  # if os.path.exists(debug_file): enter ipdb
     result_file = 'result.csv'
 
-    num_epochs = 15
+    num_epochs = 20
     lr = 0.1  # initial learning rate
     lr_decay = 0.95  # when val_loss increase, lr = lr*lr_decay
     weight_decay = 0  # 损失函数

@@ -72,15 +72,17 @@ class ConfusionMeter():
         else:
             cf = self.cf
 
-        IoU = np.diag(cf) / (np.sum(cf, axis=0) + np.sum(cf, axis=1) - np.diag(cf))
+        epsilon = 1e-20
+
+        IoU = np.diag(cf) / ((np.sum(cf, axis=0) + np.sum(cf, axis=1) - np.diag(cf)) + epsilon)
         mean_IoU = np.nanmean(IoU)
 
-        dice = 2 * np.diag(cf) / (np.sum(cf, axis=0) + np.sum(cf, axis=1))
+        dice = 2 * np.diag(cf) / ((np.sum(cf, axis=0) + np.sum(cf, axis=1)) + epsilon)
         mean_dice = np.nanmean(dice)
 
-        acc = np.diag(cf).sum() / cf.sum()
+        acc = np.diag(cf).sum() / (cf.sum() + epsilon)
 
-        recall = np.diag(cf) / np.sum(cf, axis=1)
+        recall = np.diag(cf) / (np.sum(cf, axis=1) + epsilon)
         mean_recall = np.nanmean(recall)
 
         scores = {

@@ -156,9 +156,12 @@
 #
 # dict2csv_r(list, './rec.csv')
 
-dict_ = {'a': 1, 'b': 2}
+# dict_ = {'a': 1, 'b': 2}
+#
+# list = [x for x in dict_.values()]
+#
+# list.insert(0, 1000)
+# print(list)
 
-list = [x for x in dict_.values()]
 
-list.insert(0, 1000)
-print(list)
+print( 1 + 1e-20)

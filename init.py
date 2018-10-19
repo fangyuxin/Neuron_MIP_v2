@@ -53,8 +53,8 @@ if cfg.CV:
     dataset['test'] = NeuronDataset(cfg.dataset_root, phase='test',
                              aug_dict=cfg.aug_dict, split_ratio=cfg.split_ratio)
 
-    dataloader['test'] = DataLoader(dataset['test'], batch_size=cfg.batch_size,
-                          shuffle=cfg.shuffle, num_workers=cfg.num_workers)
+    dataloader['test'] = DataLoader(dataset['test'], batch_size=cfg.test_batch_size,
+                          shuffle=False, num_workers=cfg.num_workers)
 
 
 
@@ -65,14 +65,20 @@ else:
     dataset = {
         phase: NeuronDataset(cfg.dataset_root, phase=phase,
                              aug_dict=cfg.aug_dict, split_ratio=cfg.split_ratio)
-        for phase in ['train', 'val', 'test']
+        for phase in ['train', 'val']
     }
 
     dataloader = {
         phase: DataLoader(dataset[phase], batch_size=cfg.batch_size,
                           shuffle=cfg.shuffle, num_workers=cfg.num_workers)
-        for phase in ['train', 'val', 'test']
+        for phase in ['train', 'val']
     }
+
+    dataset['test'] = NeuronDataset(cfg.dataset_root, phase='test',
+                             aug_dict=cfg.aug_dict, split_ratio=cfg.split_ratio)
+
+    dataloader['test'] = DataLoader(dataset['test'], batch_size=cfg.test_batch_size,
+                          shuffle=False, num_workers=cfg.num_workers)
 
 
 # 6.初始化criterion.
@@ -90,6 +96,7 @@ loss_meter = AverageValueMeter()
 score_meter = ConfusionMeter(cfg.num_class['out'])
 # model_stat_meter = AverageValueMeter()
 
+# 10.用于输出统计数据
 def list2csv(list, file, mode='a+'):
     with open(file, mode) as f:
         w=csv.writer(f)

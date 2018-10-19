@@ -1,7 +1,6 @@
 import os
-import random
-import numpy as np
 from PIL import Image
+from config import *
 from augmentations import *
 from torch.utils.data import Dataset, DataLoader
 
@@ -24,15 +23,18 @@ class NeuronDataset(Dataset):
 
         images_root = os.path.join(root, self.phase, 'image')
         images_list = [os.path.join(images_root, image_name) \
-                        for image_name in os.listdir(images_root)[:8193]]
+                        for image_name in os.listdir(images_root)[ : cfg.data_size]]
 
         images_list = sorted(images_list, key=lambda x: \
                              int(x.split('.')[-2].split('/')[-1]))
 
         imgs_list_len = len(images_list)
 
-        np.random.seed(100)
-        np.random.shuffle(images_list)
+        if phase == 'test':
+            pass
+        else:
+            np.random.seed(100)
+            np.random.shuffle(images_list)
 
         s = start * int(imgs_list_len * split_ratio)
         e = s + int(imgs_list_len * split_ratio)
