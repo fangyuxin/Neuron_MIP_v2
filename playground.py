@@ -164,4 +164,46 @@
 # print(list)
 
 
-print( 1 + 1e-20)
+# print( 1 + 1e-20)
+# -*- coding: utf-8 -*-
+
+#
+# class Celsius():
+#     def __init__(self, temperature=0):
+#         self.temperature = temperature
+#
+#     def get_temperature(self):
+#         print('Getting value')
+#         return self._temperature
+#
+#     def set_temperature(self, value):
+#         if value < -273:
+#             raise ValueError('Wrong')
+#         print('Setting value')
+#         self._temperature = value
+#
+#     temperature = property(get_temperature, set_temperature)
+#
+# c = Celsius()
+# print(c.temperature)
+
+def f1(msg):
+
+    def printer():
+        print(msg)
+
+    return printer()
+
+
+def f2(msg):
+    def printer():
+        print(msg)
+
+    return printer
+
+f1('Hello')
+f = f2('Hello')
+f()
+del f2
+# f_ = f2('Hello')
+f()

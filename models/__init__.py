@@ -1,3 +1,3 @@
 from .unet import Unet
-# from .model import *
+from .model import *
 

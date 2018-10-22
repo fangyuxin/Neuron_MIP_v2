@@ -1,4 +1,4 @@
-from .model import Model
+from model import *
 import torch
 import torch.nn as nn
 
@@ -84,3 +84,58 @@ class Unet(Model):
 
         return self.output(up4)
 
+
+# # model = Unet()
+# #
+# # for n, m in model.named_children():
+# #     print(n, ':', m)
+# #     print('-' * 100)
+#
+# # for i, m in enumerate(model):
+# #     print(i)
+# #     print(m)
+# #     print('-' * 100)
+#
+#
+# # m = nn.Conv2d(1, 100, 3, 3)
+# #
+# # for i in m.state_dict():
+# #     print(m.state_dict()[i].shape)
+#
+# # model = nn.Sequential(
+# #     nn.Conv2d(3, 10, 1),
+# #     nn.Conv2d(10, 3, 1),
+# #     nn.Sequential(
+# #         nn.Conv2d(3, 10, 1),
+# #         nn.Conv2d(10, 3, 1)
+# #     )
+# # )
+# #
+# # for n, m in model.named_children():
+# #     print(n, ':', m)
+# #     print('-' * 100)
+#
+# # for i in m.state_dict():
+# #     print(i)
+# #
+# # for i in m.state_dict():
+# #     print(i)
+# #
+#
+# class Net(nn.Module):
+#     def __init__(self):
+#         super().__init__()
+#
+#         self.l = nn.Sequential(
+#             nn.Conv2d(3, 10, 1),
+#             nn.Conv2d(10, 3, 1),
+#             nn.Sequential(
+#                 nn.Conv2d(3, 10, 1),
+#                 nn.Conv2d(10, 3, 1)
+#             )
+#         )
+#
+# a = Net()
+# for n, m in a.named_children():
+#     print(n, ':', m)
+#     print('-' * 100)
